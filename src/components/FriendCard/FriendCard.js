@@ -7,12 +7,13 @@ import * as classes from './FriendCard.module.css';
 class FriendCard extends Component {
     state = {
         loaded: false,
+        error: null,
         expanded: false,
         character: null
     };
 
     // Type is avatar, main, inset
-    //http://render-{region}.worldofwarcraft.com/character/{character.thumbnail}
+    // http://render-{region}.worldofwarcraft.com/character/{character.thumbnail}
     thumbnailUrl = (region, thumbnailUrl, type) => {
         const prefix = 'http://render-';
         const body = '.worldofwarcraft.com/character/';
@@ -41,15 +42,18 @@ class FriendCard extends Component {
             console.log(resp.data);
             this.setState({
                 character: resp.data,
-                loaded: true
+                loaded: true,
+                error: null
             });
         }).catch(e => {
-            this.setState({loaded: false});
+            console.log(e);
+            window.error = e;
+            this.setState({loaded: false, error: e});
         });
     }
 
     componentDidUpdate() {
-        if (!this.state.loaded)
+        if (!this.state.loaded && !this.state.error)
             this.queryCharacterData();
     }
 
@@ -87,7 +91,16 @@ class FriendCard extends Component {
         return this.thumbnailUrl(settings.region, settings.thumbnailUrl, settings.type)
     }
 
-    render() {
+    errorMessage(error) {
+        const status = error.response.status;
+        if (status === 404) {
+            return <span>Character {`${this.props.region}/${this.props.realm}/${this.props.character}`} does not exist :(</span>
+        } else {
+            return <span>An error has occurred...</span>
+        }
+    }
+
+    cardDetails() {
         const character = this.state.character || this.emptyCharacter();
         const titleName = this.formatNameWithTitle(
             this.enabledTitleStringOrBlank(character.titles), 
@@ -95,37 +108,40 @@ class FriendCard extends Component {
         );
         return (
             <React.Fragment>
-                <div className={this.expandable(classes.FriendCard)} >
-                    <div 
-                        className={this.expandable(classes.MediumCardImage)}
-                        style={{backgroundImage: `url('${this.charImageUrlForState()}')`}}
-                        onClick={this.toggleExpand}
-                    >
+                <div className={this.expandable(classes.MediumCardImage)}
+                    style={{backgroundImage: `url('${this.charImageUrlForState()}')`}}
+                    onClick={this.toggleExpand}>
+                </div>
+                <div className={classes.InfoHolder}>
+                    <div className={classes.NameField}>
+                        <span>{titleName}</span>
                     </div>
-                    <div className={classes.InfoHolder}>
-                        <div className={classes.NameField}>
-                            <span>{titleName}</span>
-                        </div>
-                        <br />
-                        <div className={classes.DetailField}>
-                            <span>LV: {character.level}</span>
-                        </div>
-                
-                        <div className={classes.DetailField}>
-                            <span>iLevel: {character.items.averageItemLevel}</span>
-                        </div>
-                        
-                        <div className={classes.DetailField}>
-                            <span>HKs: {character.totalHonorableKills}</span>
-                        </div>
+                    <br />
+                    <div className={classes.DetailField}>
+                        <span>LV: {character.level}</span>
+                    </div>
+            
+                    <div className={classes.DetailField}>
+                        <span>iLevel: {character.items.averageItemLevel}</span>
+                    </div>
+                    
+                    <div className={classes.DetailField}>
+                        <span>HKs: {character.totalHonorableKills}</span>
+                    </div>
 
-                        <div className={classes.DetailField}>
-                            <span>Achievement Points: {character.achievementPoints}</span>
-                        </div>
+                    <div className={classes.DetailField}>
+                        <span>Achievement Points: {character.achievementPoints}</span>
                     </div>
                 </div>
-                {/*<p>{JSON.stringify(this.state.character)}</p>*/}
             </React.Fragment>
+        );
+    }
+
+    render() {
+        return (
+            <div className={this.expandable(classes.FriendCard)} >
+                {this.state.error ? this.errorMessage(this.state.error) : this.cardDetails()}
+            </div>
         );
     }
 }
