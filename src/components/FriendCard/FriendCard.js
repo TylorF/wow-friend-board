@@ -38,7 +38,6 @@ class FriendCard extends Component {
             this.props.character, 
             fields
         )).then(resp => {
-            window.progression = resp.data.progression;
             console.log(resp.data);
             this.setState({
                 character: resp.data,
@@ -93,11 +92,14 @@ class FriendCard extends Component {
 
     errorMessage(error) {
         const status = error.response.status;
+        let message;
         if (status === 404) {
-            return <span>Character {`${this.props.region}/${this.props.realm}/${this.props.character}`} does not exist :(</span>
+            const charString = `${this.props.region}/${this.props.realm}/${this.props.character}`;
+            message = <span>Character {charString} does not exist :(</span>;
         } else {
-            return <span>An error has occurred...</span>
+            message = <span>An error has occurred...</span>;
         }
+        return <div className={classes.ErrorMessage}>{message}</div>;
     }
 
     cardDetails() {
@@ -108,30 +110,24 @@ class FriendCard extends Component {
         );
         return (
             <React.Fragment>
-                <div className={this.expandable(classes.MediumCardImage)}
-                    style={{backgroundImage: `url('${this.charImageUrlForState()}')`}}
-                    onClick={this.toggleExpand}>
+                <div className={classes.NameField}>
+                    <span>{titleName}</span>
                 </div>
-                <div className={classes.InfoHolder}>
-                    <div className={classes.NameField}>
-                        <span>{titleName}</span>
-                    </div>
-                    <br />
-                    <div className={classes.DetailField}>
-                        <span>LV: {character.level}</span>
-                    </div>
-            
-                    <div className={classes.DetailField}>
-                        <span>iLevel: {character.items.averageItemLevel}</span>
-                    </div>
-                    
-                    <div className={classes.DetailField}>
-                        <span>HKs: {character.totalHonorableKills}</span>
-                    </div>
+                <br />
+                <div className={classes.DetailField}>
+                    <span>LV: {character.level}</span>
+                </div>
+        
+                <div className={classes.DetailField}>
+                    <span>iLevel: {character.items.averageItemLevel}</span>
+                </div>
+                
+                <div className={classes.DetailField}>
+                    <span>HKs: {character.totalHonorableKills}</span>
+                </div>
 
-                    <div className={classes.DetailField}>
-                        <span>Achievement Points: {character.achievementPoints}</span>
-                    </div>
+                <div className={classes.DetailField}>
+                    <span>Achievement Points: {character.achievementPoints}</span>
                 </div>
             </React.Fragment>
         );
@@ -140,7 +136,13 @@ class FriendCard extends Component {
     render() {
         return (
             <div className={this.expandable(classes.FriendCard)} >
-                {this.state.error ? this.errorMessage(this.state.error) : this.cardDetails()}
+                <div className={this.expandable(classes.MediumCardImage)}
+                    style={{backgroundImage: `url('${this.charImageUrlForState()}')`}}
+                    onClick={this.toggleExpand}>
+                </div>
+                <div className={classes.InfoHolder}>
+                    {this.state.error ? this.errorMessage(this.state.error) : this.cardDetails()}
+                </div>
             </div>
         );
     }
