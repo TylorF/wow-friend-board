@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import axios from 'axios';
 
 import * as classes from './FriendCard.module.css';
 
@@ -12,32 +11,14 @@ class FriendCard extends Component {
         character: null
     };
 
-    // Type is avatar, main, inset
-    // http://render-{region}.worldofwarcraft.com/character/{character.thumbnail}
-    thumbnailUrl = (region, thumbnailUrl, type) => {
-        const prefix = 'http://render-';
-        const body = '.worldofwarcraft.com/character/';
-        const thumbnailKey = thumbnailUrl.replace('avatar.jpg', `${type}.jpg`)
-        return `${prefix}${region}${body}${thumbnailKey}?alt=/wow/static/images/2d/avatar/1-0.jpg`
-    };
-
-    characterDataUrl = (apiKey, region, realm, character, fields = []) => {
-        const fieldString = `${fields.length > 0 ? `&fields=${fields.join(',')}` : ''}`;
-        
-        const url = `https://${region}.api.battle.net/wow/character/${realm}/${character}`;
-        const params = `?locale=en_US&apikey=${apiKey}${fieldString}`;
-        return `${url}${params}`
-    };
-
     queryCharacterData = () => {
-        const fields = ['items', 'titles', 'progression'];
-        axios.get(this.characterDataUrl(
-            this.props.apikey,
+        const fields = ['items', 'titles', 'progression', 'guild'];
+        this.props.battlenet.characterData(
             this.props.region,
             this.props.realm,
             this.props.character, 
             fields
-        )).then(resp => {
+        ).then(resp => {
             console.log(resp.data);
             this.setState({
                 character: resp.data,
@@ -87,7 +68,7 @@ class FriendCard extends Component {
             thumbnailUrl: character.thumbnail || 'fallback',
             type: this.state.expanded ? 'main' : 'inset'
         }
-        return this.thumbnailUrl(settings.region, settings.thumbnailUrl, settings.type)
+        return this.props.battlenet.characterImageUrl(settings.region, settings.thumbnailUrl, settings.type)
     }
 
     errorMessage(error) {
@@ -102,17 +83,31 @@ class FriendCard extends Component {
         return <div className={classes.ErrorMessage}>{message}</div>;
     }
 
+    guildField(name) {
+        return (
+            <div className={classes.GuildField}>
+                <span>{`<${name}>`}</span>
+            </div>
+        );
+    }
+
     cardDetails() {
         const character = this.state.character || this.emptyCharacter();
         const titleName = this.formatNameWithTitle(
             this.enabledTitleStringOrBlank(character.titles), 
             character.name
         );
+
         return (
             <React.Fragment>
                 <div className={classes.NameField}>
                     <span>{titleName}</span>
                 </div>
+                {character.guild ? (
+                    <div className={classes.GuildField}>
+                        <span>{`<${character.guild.name}>`}</span>
+                    </div> 
+                ): null}
                 <br />
                 <div className={classes.DetailField}>
                     <span>LV: {character.level}</span>

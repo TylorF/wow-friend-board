@@ -9,7 +9,7 @@ const friendList = (props) => {
             return (
               <FriendCard 
                 key={char.name}
-                apikey={props.apiKey}
+                battlenet={props.battlenet}
                 region={char.region}
                 realm={char.realm}
                 character={char.name}

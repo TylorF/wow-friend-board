@@ -1,20 +1,30 @@
 import React, { Component } from 'react';
 import './App.css';
+import battlenet from './lib/battlenet';
 
 import FriendList from './components/FriendList/FriendList';
 import AppBar from './components/AppBar/AppBar';
 
+
 class App extends Component {
-  state = {
-    settings: JSON.parse(localStorage.getItem('settings') || '{}'),
-    characters: JSON.parse(localStorage.getItem('characters') || '[]')
+  constructor() {
+    super();
+    const settings = JSON.parse(localStorage.getItem('settings') || '{}');
+    const characters = JSON.parse(localStorage.getItem('characters') || '[]');
+
+    this.state = {
+      settings: settings,
+      characters: characters,
+      battlenet: new battlenet(settings.apiKey)
+    }
   }
 
 
   onSaveSettings = (settings) => {
     localStorage.setItem('settings', JSON.stringify(settings));
     this.setState({
-      settings: settings
+      settings: settings,
+      battlenet: new battlenet(settings.apiKey)
     })
   };
 
@@ -34,7 +44,7 @@ class App extends Component {
           onSaveCharacters={this.onSaveCharacters}
         />
         <FriendList 
-          apiKey={this.state.settings.apiKey}
+          battlenet={this.state.battlenet}
           characters={this.state.characters}
         />
       </div>
