@@ -21,9 +21,9 @@ class battlenet {
 
 
      // Type is avatar, main, inset
-    // http://render-{region}.worldofwarcraft.com/character/{character.thumbnail}
+    // https://render-{region}.worldofwarcraft.com/character/{character.thumbnail}
     characterImageUrl = (region, thumbnailUrl, type) => {
-        const prefix = 'http://render-';
+        const prefix = 'https://render-';
         const body = '.worldofwarcraft.com/character/';
         const thumbnailKey = thumbnailUrl.replace('avatar.jpg', `${type}.jpg`)
         return `${prefix}${region}${body}${thumbnailKey}?alt=/wow/static/images/2d/avatar/1-0.jpg`

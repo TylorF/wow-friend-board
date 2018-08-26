@@ -55,7 +55,7 @@ class AppBar extends Component {
                         {this.childTabs()}
                     </div>
                 </header>
-                <div className={this.getDropDownClass}>
+                <div className={this.getDropDownClass()}>
                     {this.state.content}
                 </div>
             </React.Fragment>
