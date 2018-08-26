@@ -3,7 +3,9 @@ import './App.css';
 import battlenet from './lib/battlenet';
 
 import FriendList from './components/FriendList/FriendList';
-import AppBar from './components/AppBar/AppBar';
+import AppBar, { BarTab } from './components/AppBar/AppBar';
+import SettingsMenu from './components/AppBar/SettingsMenu/SettingsMenu';
+import CharactersMenu from './components/AppBar/CharactersMenu/CharactersMenu';
 
 
 class App extends Component {
@@ -38,11 +40,22 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <AppBar 
-          characters={this.state.characters}
-          onSaveSettings={this.onSaveSettings}
-          onSaveCharacters={this.onSaveCharacters}
-        />
+        <AppBar >
+          <BarTab title='Settings'>
+            <SettingsMenu 
+              settings={this.state.settings}
+              characters={this.state.characters}
+              onSaveSettings={this.onSaveSettings}
+              onSaveCharacters={this.onSaveCharacters}
+            />
+          </BarTab>
+          <BarTab title='Characters'>
+            <CharactersMenu
+              characters={this.state.characters}
+              onSaveCharacters={this.onSaveCharacters}
+            />
+          </BarTab>
+        </AppBar>
         <FriendList 
           battlenet={this.state.battlenet}
           characters={this.state.characters}
