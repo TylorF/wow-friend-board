@@ -67,7 +67,7 @@ class SettingsMenu extends Component {
                     />
                     <label>Include API Key</label>
                     <br />
-                    {exportString ? <textarea readOnly={true} defaultValue={exportString} /> : null}
+                    {exportString ? <textarea readOnly={true} value={exportString} /> : null}
                 </form>
                 <form onSubmit={this.importSettingsSubmit}>
                     <h4>Import Configuration</h4>
