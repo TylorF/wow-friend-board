@@ -25,7 +25,7 @@ class App extends Component {
   onSaveSettings = (settings) => {
     localStorage.setItem('settings', JSON.stringify(settings));
     this.setState({
-      settings: settings,
+      settings: {...settings},
       battlenet: new battlenet(settings.apiKey)
     })
   };
@@ -33,7 +33,7 @@ class App extends Component {
   onSaveCharacters = (characters) => {
     localStorage.setItem('characters', JSON.stringify(characters));
     this.setState({
-      characters: characters
+      characters: [...characters]
     })
   }
 

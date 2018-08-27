@@ -17,11 +17,11 @@ class AppBar extends Component {
         return tabClasses.join(' ');
     }
 
-    onTabClick (tabName, tabContent){
+    onTabClick (tabName){
         if(tabName === this.state.selection){
-            this.setState({selection: null, content: null, expanded: false});
+            this.setState({selection: null, expanded: false});
         } else {
-            this.setState({selection: tabName, content: tabContent, expanded: true});
+            this.setState({selection: tabName, expanded: true});
         }
     }
 
@@ -33,10 +33,16 @@ class AppBar extends Component {
                 <div 
                     key={tabName}
                     className={this.getDropDownTabClass(tabName)} 
-                    onClick={() => this.onTabClick(tabName, tabDef)}
+                    onClick={() => this.onTabClick(tabName)}
                 >{tabName}</div>
             );
         });
+    }
+
+    activeTab = () => {
+        return this.props.children.filter(tab => {
+            return tab.props.title === this.state.selection
+        })
     }
 
     getDropDownClass = () => {
@@ -56,7 +62,7 @@ class AppBar extends Component {
                     </div>
                 </header>
                 <div className={this.getDropDownClass()}>
-                    {this.state.content}
+                    {this.activeTab()}
                 </div>
             </React.Fragment>
         );

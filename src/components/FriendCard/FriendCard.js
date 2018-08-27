@@ -32,8 +32,10 @@ class FriendCard extends Component {
         });
     }
 
-    componentDidUpdate() {
-        if (!this.state.loaded && !this.state.error)
+    componentDidUpdate(prevProps) {
+        if (this.props.battlenet !== prevProps.battlenet)
+            this.queryCharacterData();
+        else if (!this.state.loaded && !this.state.error)
             this.queryCharacterData();
     }
 
