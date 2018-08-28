@@ -4,6 +4,7 @@
     border: 1px solid black;
     vertical-align: top;
     line-height: 30px;
+    user-select: none;
 }
 .DropDown {
     display: none;
@@ -39,6 +40,10 @@
     padding-right: 5px;
     box-sizing: border-box;
 }
-.DropDownTab.Active {
-    border-bottom: 3px solid red;
+.DropDownTab:hover {
+    border-bottom: 3px solid grey;
 }
+.DropDownTab.Active {
+    border-bottom: 3px solid red !important;
+}
+
