@@ -1,62 +1,62 @@
 .FriendCard {
-    text-align: left;
-    height: 116px;
-    width: 900px;
-    border: 1px solid black;
+  text-align: left;
+  height: 116px;
+  width: 900px;
+  border: 1px solid black;
 }
 
 .FriendCard.open {
-    height: 500px;
+  height: 500px;
 }
 
 .InfoHolder {
-    height: 100%;
-    width: 670px;
-    display: inline-block;
-    vertical-align: top;
+  height: 100%;
+  width: 670px;
+  display: inline-block;
+  vertical-align: top;
 }
 
 .MediumCardImage {
-    width: 230px;
-    height: 100%;
-    display: inline-block;
-    background-position: center;
-    background-size: 100% 100%;
+  width: 230px;
+  height: 100%;
+  display: inline-block;
+  background-position: center;
+  background-size: 100% 100%;
 }
 
 .MediumCardImage.open {
-    background-size: auto 500px;
+  background-size: auto 500px;
 }
 
 .MediumCardImage img {
-    width: 100%;
-    height: 100%;
+  width: 100%;
+  height: 100%;
 }
 
 .NameField {
-    display: inline-block;
-    font-weight: bold;
-    font-size: 1.5em;
+  display: inline-block;
+  font-weight: bold;
+  font-size: 1.5em;
 }
 
 .GuildField {
-    display: inline-block;
-    font-weight: none;
-    color: #444;
-    font-size: 1.2em;
+  display: inline-block;
+  font-weight: none;
+  color: #444;
+  font-size: 1.2em;
 }
 
 .DetailField {
-    width: 200px;
-    display: inline-block;
-    font-size: 1em;
+  width: 200px;
+  display: inline-block;
+  font-size: 1em;
 }
 
 .ErrorMessage {
-    height: 100%;
-    width: 100%;
-    padding: 50px;
-    box-sizing: border-box;
-    font-size: 20px;
-    color: red;
+  height: 100%;
+  width: 100%;
+  padding: 50px;
+  box-sizing: border-box;
+  font-size: 20px;
+  color: red;
 }

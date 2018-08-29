@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
 import './App.css';
-import battlenet from './lib/battlenet';
+import Battlenet from './lib/Battlenet';
 
 import FriendList from './components/FriendList/FriendList';
 import AppBar, { BarTab } from './components/AppBar/AppBar';
 import SettingsMenu from './components/AppBar/SettingsMenu/SettingsMenu';
 import CharactersMenu from './components/AppBar/CharactersMenu/CharactersMenu';
-
 
 class App extends Component {
   constructor() {
@@ -15,51 +14,48 @@ class App extends Component {
     const characters = JSON.parse(localStorage.getItem('characters') || '[]');
 
     this.state = {
-      settings: settings,
-      characters: characters,
-      battlenet: new battlenet(settings.apiKey)
-    }
+      settings,
+      characters,
+      battlenet: new Battlenet(settings.apiKey)
+    };
   }
 
-
-  onSaveSettings = (settings) => {
+  onSaveSettings = settings => {
     localStorage.setItem('settings', JSON.stringify(settings));
     this.setState({
-      settings: {...settings},
-      battlenet: new battlenet(settings.apiKey)
-    })
+      settings: { ...settings },
+      battlenet: new Battlenet(settings.apiKey)
+    });
   };
 
-  onSaveCharacters = (characters) => {
+  onSaveCharacters = characters => {
     localStorage.setItem('characters', JSON.stringify(characters));
     this.setState({
       characters: [...characters]
-    })
-  }
+    });
+  };
 
   render() {
+    const { settings, characters, battlenet } = this.state;
     return (
       <div className="App">
-        <AppBar >
-          <BarTab title='Settings'>
-            <SettingsMenu 
-              settings={this.state.settings}
-              characters={this.state.characters}
+        <AppBar>
+          <BarTab title="Settings">
+            <SettingsMenu
+              settings={settings}
+              characters={characters}
               onSaveSettings={this.onSaveSettings}
               onSaveCharacters={this.onSaveCharacters}
             />
           </BarTab>
-          <BarTab title='Characters'>
+          <BarTab title="Characters">
             <CharactersMenu
-              characters={this.state.characters}
+              characters={characters}
               onSaveCharacters={this.onSaveCharacters}
             />
           </BarTab>
         </AppBar>
-        <FriendList 
-          battlenet={this.state.battlenet}
-          characters={this.state.characters}
-        />
+        <FriendList battlenet={battlenet} characters={characters} />
       </div>
     );
   }

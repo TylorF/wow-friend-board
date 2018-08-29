@@ -1,49 +1,54 @@
 .AppBar {
-    height: 30px;
-    width: 100%;
-    border: 1px solid black;
-    vertical-align: top;
-    line-height: 30px;
-    user-select: none;
+  height: 30px;
+  width: 100%;
+  border: 1px solid black;
+  vertical-align: top;
+  line-height: 30px;
+  user-select: none;
 }
 .DropDown {
-    display: none;
-    width: 100%;
-    border: 1px solid black;
-    background-color: white;
+  display: none;
+  width: 100%;
+  border: 1px solid black;
+  background-color: white;
 }
 .DropDown.open {
-    display: inherit;
+  display: inherit;
 }
 .Logo {
-    text-align: left;
-    display: inline-block;
-    height: 100%;
-    font-size: 25px;
-    width: 25%;
-    box-sizing: border-box;
+  text-align: left;
+  display: inline-block;
+  height: 100%;
+  font-size: 25px;
+  width: 25%;
+  box-sizing: border-box;
 }
 .DropDownTabHolder {
-    vertical-align: top;
-    display: inline-block;
-    text-align: right;
-    height: 100%;
-    width: 70%;
-    box-sizing: border-box;
+  vertical-align: top;
+  display: inline-block;
+  text-align: right;
+  height: 100%;
+  width: 70%;
+  box-sizing: border-box;
 }
 .DropDownTab {
-    vertical-align: bottom;
-    display: inline-block;
-    height: 100%;
-    text-align: center;
-    padding-left: 5px;
-    padding-right: 5px;
-    box-sizing: border-box;
+  vertical-align: bottom;
+  display: inline-block;
+  height: 100%;
+  text-align: center;
+  padding-left: 5px;
+  padding-right: 5px;
+  box-sizing: border-box;
 }
 .DropDownTab:hover {
-    border-bottom: 3px solid grey;
+  border-bottom: 3px solid grey;
 }
 .DropDownTab.Active {
-    border-bottom: 3px solid red !important;
+  border-bottom: 3px solid red !important;
+  outline: none;
 }
 
+/* This is a stopgap to turn off all the highlighting */
+/*[tabindex] {
+  outline: none;
+}*/
