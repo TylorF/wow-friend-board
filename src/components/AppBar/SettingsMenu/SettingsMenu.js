@@ -55,34 +55,48 @@ class SettingsMenu extends Component {
     }
   };
 
-  render() {
+  settingsForm = () => (
+    <form onSubmit={this.settingsSaveSubmit}>
+      <h4>Settings</h4>
+      <label htmlFor="apikey">
+        Api Key:
+        <input id="apiKey" type="text" name="apiKey" />
+      </label>
+
+      <button type="submit">Save</button>
+    </form>
+  );
+
+  exportForm = () => {
     const exportString = this.exportString();
     return (
-      <React.Fragment>
-        <form onSubmit={this.settingsSaveSubmit}>
-          <h4>Settings</h4>
-          <label htmlFor="apikey">
-            Api Key:
-            <input id="apiKey" type="text" name="apiKey" />
-          </label>
+      <form>
+        <h4>Export Configuration</h4>
+        <input
+          type="checkbox"
+          onChange={e => this.setState({ withApiExport: e.target.checked })}
+        />
+        <span>Include API Key</span>
+        <br />
+        {exportString ? <textarea readOnly value={exportString} /> : null}
+      </form>
+    );
+  };
 
-          <button type="submit">Save</button>
-        </form>
-        <form>
-          <h4>Export Configuration</h4>
-          <input
-            type="checkbox"
-            onChange={e => this.setState({ withApiExport: e.target.checked })}
-          />
-          <span>Include API Key</span>
-          <br />
-          {exportString ? <textarea readOnly value={exportString} /> : null}
-        </form>
-        <form onSubmit={this.importSettingsSubmit}>
-          <h4>Import Configuration</h4>
-          <textarea id="importData" name="importData" />
-          <button type="submit">Import</button>
-        </form>
+  importForm = () => (
+    <form onSubmit={this.importSettingsSubmit}>
+      <h4>Import Configuration</h4>
+      <textarea id="importData" name="importData" />
+      <button type="submit">Import</button>
+    </form>
+  );
+
+  render() {
+    return (
+      <React.Fragment>
+        {this.settingsForm()}
+        {this.exportForm()}
+        {this.importForm()}
       </React.Fragment>
     );
   }

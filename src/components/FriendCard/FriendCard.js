@@ -97,6 +97,12 @@ class FriendCard extends Component {
     </div>
   );
 
+  detailField = message => (
+    <div className={classes.DetailField}>
+      <span>{message}</span>
+    </div>
+  );
+
   cardDetails = () => {
     const { character = this.emptyCharacter() } = this.state;
     const titleName = this.formatNameWithTitle(
@@ -115,21 +121,10 @@ class FriendCard extends Component {
           </div>
         ) : null}
         <br />
-        <div className={classes.DetailField}>
-          <span>{`LV: ${character.level}`}</span>
-        </div>
-
-        <div className={classes.DetailField}>
-          <span>{`iLevel: ${character.items.averageItemLevel}`}</span>
-        </div>
-
-        <div className={classes.DetailField}>
-          <span>{`HKs: ${character.totalHonorableKills}`}</span>
-        </div>
-
-        <div className={classes.DetailField}>
-          <span>{`Achievement Points: ${character.achievementPoints}`}</span>
-        </div>
+        {this.detailField(`LV: ${character.level}`)}
+        {this.detailField(`iLevel: ${character.items.averageItemLevel}`)}
+        {this.detailField(`HKs: ${character.totalHonorableKills}`)}
+        {this.detailField(`Achievement Points: ${character.achievementPoints}`)}
       </React.Fragment>
     );
   };
