@@ -2,6 +2,17 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 class CharactersMenu extends Component {
+  static propTypes = {
+    characters: PropTypes.arrayOf(
+      PropTypes.shape({
+        region: PropTypes.string.isRequired,
+        realm: PropTypes.string.isRequired,
+        name: PropTypes.string.isRequired
+      })
+    ).isRequired,
+    onSaveCharacters: PropTypes.func.isRequired
+  };
+
   existingCharacterList = () => {
     const { characters } = this.props;
     return characters.map(character => (
@@ -76,16 +87,5 @@ class CharactersMenu extends Component {
     );
   }
 }
-
-CharactersMenu.propTypes = {
-  characters: PropTypes.arrayOf(
-    PropTypes.shape({
-      region: PropTypes.string.isRequired,
-      realm: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired
-    })
-  ).isRequired,
-  onSaveCharacters: PropTypes.func.isRequired
-};
 
 export default CharactersMenu;

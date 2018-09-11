@@ -5,6 +5,13 @@ import * as classes from './FriendCard.module.css';
 import Battlenet from '../../lib/Battlenet';
 
 class FriendCard extends Component {
+  static propTypes = {
+    battlenet: PropTypes.instanceOf(Battlenet).isRequired,
+    region: PropTypes.string.isRequired,
+    realm: PropTypes.string.isRequired,
+    character: PropTypes.string.isRequired
+  };
+
   state = {
     loaded: false,
     error: null,
@@ -152,12 +159,5 @@ class FriendCard extends Component {
     );
   }
 }
-
-FriendCard.propTypes = {
-  battlenet: PropTypes.instanceOf(Battlenet).isRequired,
-  region: PropTypes.string.isRequired,
-  realm: PropTypes.string.isRequired,
-  character: PropTypes.string.isRequired
-};
 
 export default FriendCard;

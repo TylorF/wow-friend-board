@@ -4,7 +4,19 @@ import PropTypes from 'prop-types';
 import * as classes from './AppBar.module.css';
 
 class AppBar extends Component {
+  static propTypes = {
+    children: PropTypes.oneOfType([
+      PropTypes.element,
+      PropTypes.arrayOf(PropTypes.element)
+    ])
+  };
+
+  static defaultProps = {
+    children: []
+  };
+
   state = {
+    tabs: [],
     expanded: false,
     selection: null
   };
@@ -19,6 +31,30 @@ class AppBar extends Component {
     }
   }
 
+  registerTab = tabName => {
+    this.setState(prevState => ({ tabs: [...prevState.tabs, tabName] }));
+  };
+
+  childTabs = () => {
+    const { tabs } = this.state;
+    return tabs.map(tab => {
+      return (
+        <div
+          key={tab}
+          role="tab"
+          tabIndex="0"
+          className={this.getDropDownTabClass(tab)}
+          onClick={e => this.onTabClick(tab, e)}
+          onKeyPress={e => {
+            if (e.key === 'Enter') this.onTabClick(tab, e);
+          }}
+        >
+          {tab}
+        </div>
+      );
+    });
+  };
+
   getDropDownTabClass = tab => {
     const { expanded, selection } = this.state;
     const tabClasses = [classes.DropDownTab];
@@ -28,32 +64,18 @@ class AppBar extends Component {
     return tabClasses.join(' ');
   };
 
-  childTabs = () => {
-    const { children } = this.props;
-    // Turn it into an array in case there's only one element
-    return [].concat(children).map(tabDef => {
-      const tabName = tabDef.props.title;
+  renderChildren = (children, selectedIndex) => {
+    return children.map((child, ind) => {
+      const selected = ind === selectedIndex;
+      const style = selected
+        ? [classes.DropDownContent, classes.open]
+        : [classes.DropDownContent];
       return (
-        <div
-          key={tabName}
-          role="tab"
-          tabIndex="0"
-          className={this.getDropDownTabClass(tabName)}
-          onClick={e => this.onTabClick(tabName, e)}
-          onKeyPress={e => {
-            if (e.key === 'Enter') this.onTabClick(tabName, e);
-          }}
-        >
-          {tabName}
+        <div className={style.join(' ')}>
+          {React.cloneElement(child, { registerTab: this.registerTab })}
         </div>
       );
     });
-  };
-
-  activeTab = () => {
-    const { children } = this.props;
-    const { selection } = this.state;
-    return children.filter(tab => tab.props.title === selection);
   };
 
   getDropDownClass = () => {
@@ -63,6 +85,8 @@ class AppBar extends Component {
   };
 
   render() {
+    const { tabs, selection } = this.state;
+    const { children } = this.props;
     return (
       <React.Fragment>
         <header className={classes.AppBar}>
@@ -71,25 +95,12 @@ class AppBar extends Component {
             {this.childTabs()}
           </div>
         </header>
-        <div className={this.getDropDownClass()}>{this.activeTab()}</div>
+        <div className={this.getDropDownClass()}>
+          {this.renderChildren(children, tabs.indexOf(selection))}
+        </div>
       </React.Fragment>
     );
   }
 }
-
-AppBar.propTypes = {
-  children: PropTypes.oneOfType([
-    PropTypes.element,
-    PropTypes.arrayOf(PropTypes.element)
-  ])
-};
-
-AppBar.defaultProps = {
-  children: []
-};
-
-// BarTab component for wrapping content
-// requires title prop
-export const BarTab = props => props.children;
 
 export default AppBar;

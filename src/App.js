@@ -3,9 +3,8 @@ import './App.css';
 import Battlenet from './lib/Battlenet';
 
 import FriendList from './components/FriendList/FriendList';
-import AppBar, { BarTab } from './components/AppBar/AppBar';
-import SettingsMenu from './components/AppBar/SettingsMenu/SettingsMenu';
-import CharactersMenu from './components/AppBar/CharactersMenu/CharactersMenu';
+import AppBar, { BarTab } from './components/AppBar';
+import { SettingsMenu, CharactersMenu } from './components/Settings';
 
 class App extends Component {
   constructor() {
@@ -37,6 +36,7 @@ class App extends Component {
 
   render() {
     const { settings, characters, battlenet } = this.state;
+
     return (
       <div className="App">
         <AppBar>

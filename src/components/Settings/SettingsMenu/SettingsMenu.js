@@ -2,6 +2,13 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 class SettingsMenu extends Component {
+  static propTypes = {
+    settings: PropTypes.shape({ apiKey: PropTypes.string }).isRequired,
+    characters: PropTypes.arrayOf(PropTypes.object).isRequired,
+    onSaveSettings: PropTypes.func.isRequired,
+    onSaveCharacters: PropTypes.func.isRequired
+  };
+
   state = {
     withApiExport: false
   };
@@ -101,12 +108,5 @@ class SettingsMenu extends Component {
     );
   }
 }
-
-SettingsMenu.propTypes = {
-  settings: PropTypes.shape({ apiKey: PropTypes.string }).isRequired,
-  characters: PropTypes.arrayOf(PropTypes.object).isRequired,
-  onSaveSettings: PropTypes.func.isRequired,
-  onSaveCharacters: PropTypes.func.isRequired
-};
 
 export default SettingsMenu;

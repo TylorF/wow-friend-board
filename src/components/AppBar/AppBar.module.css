@@ -47,6 +47,12 @@
   border-bottom: 3px solid red !important;
   outline: none;
 }
+.DropDownContent {
+  display: none;
+}
+.DropDownContent.open {
+  display: inline-block;
+}
 
 /* This is a stopgap to turn off all the highlighting */
 /*[tabindex] {
