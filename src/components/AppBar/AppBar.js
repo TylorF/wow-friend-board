@@ -37,22 +37,20 @@ class AppBar extends Component {
 
   childTabs = () => {
     const { tabs } = this.state;
-    return tabs.map(tab => {
-      return (
-        <div
-          key={tab}
-          role="tab"
-          tabIndex="0"
-          className={this.getDropDownTabClass(tab)}
-          onClick={e => this.onTabClick(tab, e)}
-          onKeyPress={e => {
-            if (e.key === 'Enter') this.onTabClick(tab, e);
-          }}
-        >
-          {tab}
-        </div>
-      );
-    });
+    return tabs.map(tab => (
+      <div
+        key={tab}
+        role="tab"
+        tabIndex="0"
+        className={this.getDropDownTabClass(tab)}
+        onClick={e => this.onTabClick(tab, e)}
+        onKeyPress={e => {
+          if (e.key === 'Enter') this.onTabClick(tab, e);
+        }}
+      >
+        {tab}
+      </div>
+    ));
   };
 
   getDropDownTabClass = tab => {
@@ -64,8 +62,8 @@ class AppBar extends Component {
     return tabClasses.join(' ');
   };
 
-  renderChildren = (children, selectedIndex) => {
-    return children.map((child, ind) => {
+  renderChildren = (children, selectedIndex) =>
+    children.map((child, ind) => {
       const selected = ind === selectedIndex;
       const style = selected
         ? [classes.DropDownContent, classes.open]
@@ -76,7 +74,6 @@ class AppBar extends Component {
         </div>
       );
     });
-  };
 
   getDropDownClass = () => {
     const { expanded } = this.state;
