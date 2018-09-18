@@ -16,7 +16,8 @@ class FriendCard extends Component {
     loaded: false,
     error: null,
     expanded: false,
-    character: undefined
+    character: undefined,
+    spells: undefined
   };
 
   componentDidMount() {
@@ -34,18 +35,23 @@ class FriendCard extends Component {
     const { battlenet, region, realm, character } = this.props;
     const fields = ['items', 'titles', 'progression', 'guild'];
     battlenet
-      .characterData(region, realm, character, fields)
-      .then(resp => {
-        // I like the character data being available for dev
+      .getCharacterData(region, realm, character, fields)
+      .then(({ charData, spells }) => {
+        // I like the charatar data being available in the console for dev
+        // TODO: add to axios interceptor for dev mode
         // eslint-disable-next-line no-console
-        console.log(resp.data);
+        console.log(charData, spells);
         this.setState({
-          character: resp.data,
+          character: charData,
+          spells,
           loaded: true,
           error: null
         });
       })
       .catch(e => {
+        // I want to see errors! TODO: add to axios interceptor for dev mode
+        // eslint-disable-next-line no-console
+        console.log(e);
         this.setState({ loaded: false, error: e });
       });
   };

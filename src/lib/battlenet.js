@@ -1,12 +1,20 @@
 import axios from 'axios';
+import { deepExtractKeyValues } from './Utils';
 
 //
 class Battlenet {
   constructor(apiKey) {
     this.apiKey = apiKey;
+    this.spellCache = JSON.parse(localStorage.getItem('spellCache') || '{}');
   }
 
-  characterData = (region, realm, character, fields) =>
+  getCharacterData = (
+    region,
+    realm,
+    character,
+    fields,
+    preloadAuxData = true
+  ) =>
     axios
       .get(this.characterDataUrl(this.apiKey, region, realm, character, fields))
       .catch(e => {
@@ -14,7 +22,42 @@ class Battlenet {
         // eslint-disable-next-line no-console
         console.log(e);
         throw e;
+      })
+      .then(resp => {
+        const charData = resp.data;
+        if (!preloadAuxData) return { charData, spells: {} };
+
+        // Run the data preloaders
+        return Promise.all([this.loadCharacterSpells(charData)]).then(
+          ([spells]) => ({
+            charData,
+            spells
+          })
+        );
       });
+
+  getSpell = spellId => {
+    if (this.spellCache[spellId]) {
+      return Promise.resolve(this.spellCache[spellId]);
+    }
+    return axios.get(this.spellDataUrl(this.apiKey, spellId)).then(resp => {
+      const { data } = resp;
+      this.spellCache[spellId] = data;
+      localStorage.setItem('spellCache', JSON.stringify(this.spellCache));
+      return data;
+    });
+  };
+
+  getSpells = spellIds =>
+    Promise.all(spellIds.map(spellId => this.getSpell(spellId))).then(spells =>
+      spells.reduce((obj, spell) => ({ ...obj, [spell.id]: spell }), {})
+    );
+
+  loadCharacterSpells = charData =>
+    this.getSpells(this.extractSpellIdsFromCharacter(charData));
+
+  extractSpellIdsFromCharacter = charData =>
+    deepExtractKeyValues(charData, 'spellId').filter(id => id > 0);
 
   // Type is avatar, main, inset
   // https://render-{region}.worldofwarcraft.com/character/{character.thumbnail}
@@ -34,6 +77,9 @@ class Battlenet {
     const params = `?locale=en_US&apikey=${apiKey}${fieldString}`;
     return `${url}${params}`;
   };
+
+  spellDataUrl = (apiKey, spellId) =>
+    `https://us.api.battle.net/wow/spell/${spellId}?locale=en_US&apikey=${apiKey}`;
 }
 
 export default Battlenet;
