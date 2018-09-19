@@ -1,6 +1,8 @@
 import axios from 'axios';
 import { deepExtractKeyValues } from './Utils';
 
+export const ICON_SIZES = { small: 18, medium: 36, large: 56 };
+
 //
 class Battlenet {
   constructor(apiKey) {
@@ -80,6 +82,13 @@ class Battlenet {
 
   spellDataUrl = (apiKey, spellId) =>
     `https://us.api.battle.net/wow/spell/${spellId}?locale=en_US&apikey=${apiKey}`;
+
+  // TODO: region
+  iconImageUrl = (icon, size = 'large') => {
+    const sizeKey = ICON_SIZES[size];
+    if (!icon || !sizeKey) return null; // TODO: Default icon/size
+    return `https://render-us.worldofwarcraft.com/icons/${sizeKey}/${icon}.jpg`;
+  };
 }
 
 export default Battlenet;

@@ -138,9 +138,35 @@ class FriendCard extends Component {
         {this.detailField(`iLevel: ${character.items.averageItemLevel}`)}
         {this.detailField(`HKs: ${character.totalHonorableKills}`)}
         {this.detailField(`Achievement Points: ${character.achievementPoints}`)}
+        {this.azeriteItems(character.items)}
       </React.Fragment>
     );
   };
+
+  azeriteItems = items => {
+    if (!items) return null;
+
+    const azeriteEmpowered = Object.values(items).filter(
+      item =>
+        item instanceof Object &&
+        item.azeriteEmpoweredItem &&
+        item.azeriteEmpoweredItem.azeritePowers.length > 0
+    );
+
+    return azeriteEmpowered.map(item => this.azeriteItemDisplay(item));
+  };
+
+  azeriteItemDisplay = azeriteItem => (
+    <div>
+      <img src={this.props.battlenet.iconImageUrl(azeriteItem.icon, 'large')} />
+      {azeriteItem.name}
+      {azeriteItem.azeriteEmpoweredItem.azeritePowers.map(power => (
+        <span>
+          {`${this.state.spells[power.spellId]}} - Ring: ${power.tier}`}
+        </span>
+      ))}
+    </div>
+  );
 
   render() {
     const { error, expanded } = this.state;
