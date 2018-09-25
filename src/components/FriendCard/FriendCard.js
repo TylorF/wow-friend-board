@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import * as classes from './FriendCard.module.css';
-import Battlenet from '../../lib/Battlenet';
+import Battlenet, { ICON_SIZES } from '../../lib/Battlenet';
 
 class FriendCard extends Component {
   static propTypes = {
@@ -125,20 +125,28 @@ class FriendCard extends Component {
 
     return (
       <React.Fragment>
-        <div className={classes.NameField}>
-          <span>{titleName}</span>
-        </div>
-        {character.guild ? (
-          <div className={classes.GuildField}>
-            <span>{`<${character.guild.name}>`}</span>
+        <div className={classes.MainDetails}>
+          <div className={classes.NameField}>
+            <span>{titleName}</span>
           </div>
-        ) : null}
-        <br />
-        {this.detailField(`LV: ${character.level}`)}
-        {this.detailField(`iLevel: ${character.items.averageItemLevel}`)}
-        {this.detailField(`HKs: ${character.totalHonorableKills}`)}
-        {this.detailField(`Achievement Points: ${character.achievementPoints}`)}
-        {this.azeriteItems(character.items)}
+          {character.guild ? (
+            <div className={classes.GuildField}>
+              <span>{`<${character.guild.name}>`}</span>
+            </div>
+          ) : null}
+          <br />
+
+          {this.detailField(`LV: ${character.level}`)}
+          {this.detailField(`iLevel: ${character.items.averageItemLevel}`)}
+          {this.detailField(`HKs: ${character.totalHonorableKills}`)}
+          {this.detailField(
+            `Achievement Points: ${character.achievementPoints}`
+          )}
+        </div>
+
+        <div className={this.expandable(classes.ExpandedDetail)}>
+          {this.azeriteItems(character.items)}
+        </div>
       </React.Fragment>
     );
   };
@@ -153,20 +161,44 @@ class FriendCard extends Component {
         item.azeriteEmpoweredItem.azeritePowers.length > 0
     );
 
-    return azeriteEmpowered.map(item => this.azeriteItemDisplay(item));
+    return (
+      <div className={classes.AzeriteItemList}>
+        <span className={classes.AzeriteItemTitle}>Azerite Items</span>
+        {azeriteEmpowered.map(item => this.azeriteItemDisplay(item))}
+      </div>
+    );
   };
 
-  azeriteItemDisplay = azeriteItem => (
-    <div>
-      <img src={this.props.battlenet.iconImageUrl(azeriteItem.icon, 'large')} />
-      {azeriteItem.name}
-      {azeriteItem.azeriteEmpoweredItem.azeritePowers.map(power => (
-        <span>
-          {`${this.state.spells[power.spellId]}} - Ring: ${power.tier}`}
-        </span>
-      ))}
-    </div>
-  );
+  azeriteItemDisplay = azeriteItem => {
+    const { spells } = this.state;
+    const { battlenet } = this.props;
+    return (
+      <div className={classes.AzeriteItem}>
+        <img
+          src={battlenet.iconImageUrl(azeriteItem.icon, 'large')}
+          alt={azeriteItem.name}
+          title={azeriteItem.name}
+          className={classes.CircleIcon}
+        />
+        {azeriteItem.azeriteEmpoweredItem.azeritePowers
+          .filter(power => power.id > 0)
+          .map(power => {
+            const spell = spells[power.spellId];
+            const altHover = `${spell.name} - ${spell.description} (Tier: ${
+              power.tier
+            })`;
+            return (
+              <img
+                src={battlenet.iconImageUrl(spell.icon, 'medium')}
+                alt={altHover}
+                title={altHover}
+                className={classes.CircleIcon}
+              />
+            );
+          })}
+      </div>
+    );
+  };
 
   render() {
     const { error, expanded } = this.state;
