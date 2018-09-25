@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import * as classes from './FriendCard.module.css';
-import Battlenet from '../../lib/Battlenet';
+import Battlenet, { ICON_SIZES } from '../../lib/Battlenet';
 
 class FriendCard extends Component {
   static propTypes = {
@@ -16,7 +16,8 @@ class FriendCard extends Component {
     loaded: false,
     error: null,
     expanded: false,
-    character: undefined
+    character: undefined,
+    spells: undefined
   };
 
   componentDidMount() {
@@ -34,18 +35,23 @@ class FriendCard extends Component {
     const { battlenet, region, realm, character } = this.props;
     const fields = ['items', 'titles', 'progression', 'guild'];
     battlenet
-      .characterData(region, realm, character, fields)
-      .then(resp => {
-        // I like the character data being available for dev
+      .getCharacterData(region, realm, character, fields)
+      .then(({ charData, spells }) => {
+        // I like the charatar data being available in the console for dev
+        // TODO: add to axios interceptor for dev mode
         // eslint-disable-next-line no-console
-        console.log(resp.data);
+        console.log(charData, spells);
         this.setState({
-          character: resp.data,
+          character: charData,
+          spells,
           loaded: true,
           error: null
         });
       })
       .catch(e => {
+        // I want to see errors! TODO: add to axios interceptor for dev mode
+        // eslint-disable-next-line no-console
+        console.log(e);
         this.setState({ loaded: false, error: e });
       });
   };
@@ -119,20 +125,78 @@ class FriendCard extends Component {
 
     return (
       <React.Fragment>
-        <div className={classes.NameField}>
-          <span>{titleName}</span>
-        </div>
-        {character.guild ? (
-          <div className={classes.GuildField}>
-            <span>{`<${character.guild.name}>`}</span>
+        <div className={classes.MainDetails}>
+          <div className={classes.NameField}>
+            <span>{titleName}</span>
           </div>
-        ) : null}
-        <br />
-        {this.detailField(`LV: ${character.level}`)}
-        {this.detailField(`iLevel: ${character.items.averageItemLevel}`)}
-        {this.detailField(`HKs: ${character.totalHonorableKills}`)}
-        {this.detailField(`Achievement Points: ${character.achievementPoints}`)}
+          {character.guild ? (
+            <div className={classes.GuildField}>
+              <span>{`<${character.guild.name}>`}</span>
+            </div>
+          ) : null}
+          <br />
+
+          {this.detailField(`LV: ${character.level}`)}
+          {this.detailField(`iLevel: ${character.items.averageItemLevel}`)}
+          {this.detailField(`HKs: ${character.totalHonorableKills}`)}
+          {this.detailField(
+            `Achievement Points: ${character.achievementPoints}`
+          )}
+        </div>
+
+        <div className={this.expandable(classes.ExpandedDetail)}>
+          {this.azeriteItems(character.items)}
+        </div>
       </React.Fragment>
+    );
+  };
+
+  azeriteItems = items => {
+    if (!items) return null;
+
+    const azeriteEmpowered = Object.values(items).filter(
+      item =>
+        item instanceof Object &&
+        item.azeriteEmpoweredItem &&
+        item.azeriteEmpoweredItem.azeritePowers.length > 0
+    );
+
+    return (
+      <div className={classes.AzeriteItemList}>
+        <span className={classes.AzeriteItemTitle}>Azerite Items</span>
+        {azeriteEmpowered.map(item => this.azeriteItemDisplay(item))}
+      </div>
+    );
+  };
+
+  azeriteItemDisplay = azeriteItem => {
+    const { spells } = this.state;
+    const { battlenet } = this.props;
+    return (
+      <div className={classes.AzeriteItem}>
+        <img
+          src={battlenet.iconImageUrl(azeriteItem.icon, 'large')}
+          alt={azeriteItem.name}
+          title={azeriteItem.name}
+          className={classes.CircleIcon}
+        />
+        {azeriteItem.azeriteEmpoweredItem.azeritePowers
+          .filter(power => power.id > 0)
+          .map(power => {
+            const spell = spells[power.spellId];
+            const altHover = `${spell.name} - ${spell.description} (Tier: ${
+              power.tier
+            })`;
+            return (
+              <img
+                src={battlenet.iconImageUrl(spell.icon, 'medium')}
+                alt={altHover}
+                title={altHover}
+                className={classes.CircleIcon}
+              />
+            );
+          })}
+      </div>
     );
   };
 
